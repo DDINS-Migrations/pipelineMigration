@@ -1,0 +1,23 @@
+name: Sandbox/Demo_Test
+on:
+  push:
+    branches:
+    - "*"
+jobs:
+  A:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3.3.0
+    - id: printvar
+      run: echo "##vso[task.setvariable variable=shouldrun;isOutput=true]false"
+      shell: bash
+  B:
+    needs:
+    - A
+    runs-on: ubuntu-latest
+    if: success() && needs.A.outputs['printvar.shouldrun'] == 'true'
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3.3.0
+    - run: echo hello from B
